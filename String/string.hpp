@@ -6,14 +6,14 @@
 class String
 {
 public:
-    typedef long long num_t;
+    typedef unsigned long long num_t;
 
 private:
-    //Data
+    ///Data
 
     char* m_buffer;
     num_t m_size;
-    num_t m_buffer_size;
+    num_t m_capacity;
 
     //Basic functions to make code cleaner
 
@@ -26,7 +26,7 @@ private:
 
 public:
 
-    //Constructors and Deconstructors
+    ///Constructors and Deconstructors
 
     String();
 
@@ -38,32 +38,42 @@ public:
 
     ~String();
 
-    //Methods
-    inline num_t size() const;
+    ///Methods
+    
+    //Size methods
 
+    inline num_t size() const;
     inline num_t length() const;
 
-    inline num_t buffer_size() const;
+    inline num_t capacity() const;
+
+    //Char methods
 
     inline char& at(const num_t);
-
     inline const char& at(const num_t) const;
 
     inline char& front();
-
     inline const char& front() const;
 
     inline char& back();
-
     inline const char& back() const;
 
-    inline const char* c_str() const;
+    //Methods with str pointers
 
-    //Operators
+    //Returns a pointer to a null-terminated string. DO NOT MODIFY, or bad things might happen
+    inline const char* c_str() const;
+    
+    inline const char* begin() const;
+    inline const char* end() const;
+
+    ///Operators
+
+    //Char
 
     char& operator[] (const num_t);
-
     const char& operator[] (const num_t) const;
+
+    //Assignment
 
     String& operator= (const String&);
 
@@ -71,13 +81,17 @@ public:
 
     String& operator= (const std::string&);
 
-    bool operator== (const String&) const;
+    //Comparison
 
+    bool operator== (const String&) const;
     bool operator!= (const String&) const;
 
-    String operator+ (const String&) const;
+    //Concatination
 
+    String operator+ (const String&) const;
     String& operator+= (const String&);
+
+    //Input Output
 
     friend std::ostream& operator<< (std::ostream&, const String&);
 

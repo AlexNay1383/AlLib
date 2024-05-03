@@ -25,46 +25,43 @@ inline void String::Clear()
         m_buffer = nullptr;
     }
     m_size = 0;
-    m_buffer_size = 0;
+    m_capacity = 0;
 }
 
-//Constructors and Deconstructors
+///Constructors and Deconstructors
 
 String::String()
-: m_buffer(nullptr), m_size(0), m_buffer_size(0)
+: m_buffer(nullptr), m_size(0), m_capacity(0)
 {
 
 }
 
 String::String(const String& str)
-: m_buffer(nullptr), m_size(str.m_size), m_buffer_size(str.m_buffer_size)
+: m_buffer(nullptr), m_size(str.m_size), m_capacity(str.m_capacity)
 {
     if(str.m_buffer == nullptr)
         return;
     
-    m_buffer = new char[m_buffer_size];
+    m_buffer = new char[m_capacity];
     strcpy(m_buffer, str.m_buffer);
 }
 
 String::String(const char* const str)
-: m_buffer(nullptr), m_size(0), m_buffer_size(0)
+: m_buffer(nullptr), m_size(0), m_capacity(0)
 {
     if(str == nullptr)
         return;
     
     m_size = strlen(str);
-    m_buffer_size = m_size + 1;
-    m_buffer = new char[m_buffer_size];
+    m_capacity = m_size + 1;
+    m_buffer = new char[m_capacity];
     strcpy(m_buffer, str);
 }
 
 String::String(const std::string& str)
-: m_buffer(nullptr), m_size(str.size()), m_buffer_size(str.size() + 1)
+: m_buffer(nullptr), m_size(str.size()), m_capacity(str.capacity() + 1)
 {
-    if(m_size == 0)
-        return;
-    
-    m_buffer = new char[m_buffer_size];
+    m_buffer = new char[m_capacity];
     strcpy(m_buffer, str.c_str());
 }
 
@@ -74,7 +71,8 @@ String::~String()
         delete[] m_buffer;
 }
 
-//Methods
+///Methods
+
 inline String::num_t String::size() const
 {
     return m_size;
@@ -85,9 +83,9 @@ inline String::num_t String::length() const
     return strlen(m_buffer);
 }
 
-inline String::num_t String::buffer_size() const
+inline String::num_t String::capacity() const
 {
-    return m_buffer_size;
+    return m_capacity;
 }
 
 inline char& String::at(const String::num_t index)
@@ -125,7 +123,17 @@ inline const char* String::c_str() const
     return m_buffer;
 }
 
-//Operators
+inline const char* String::begin() const
+{
+    return m_buffer;
+}
+
+inline const char* String::end() const
+{
+    return m_buffer + m_size + 1;
+}
+
+///Operators
 
 char& String::operator[] (const String::num_t index)
 {
@@ -145,17 +153,17 @@ String& String::operator= (const String& other)
     if(other.m_buffer == nullptr)
     {
         m_buffer = nullptr;
-        m_buffer_size = 0;
+        m_capacity = 0;
         m_size = 0;
         return *this;
     }
     
-    if(m_buffer_size < other.m_size)
+    if(m_capacity < other.m_size)
     {
         Clear();
-        m_buffer_size = other.m_buffer_size;
-        m_size = m_buffer_size - 1;
-        m_buffer = new char[m_buffer_size];
+        m_capacity = other.m_capacity;
+        m_size = other.m_size;
+        m_buffer = new char[m_capacity];
         strcpy(m_buffer, other.m_buffer);
     }
     else
@@ -172,18 +180,18 @@ String& String::operator= (const char* const other)
     if(other == nullptr)
     {
         m_buffer = nullptr;
-        m_buffer_size = 0;
+        m_capacity = 0;
         m_size = 0;
         return *this;
     }
 
     num_t olen = strlen(other);
-    if(m_buffer_size < olen)
+    if(m_capacity < olen)
     {
         Clear();
-        m_buffer_size = olen;
-        m_size = m_buffer_size - 1;
-        m_buffer = new char[m_buffer_size];
+        m_capacity = olen + 1;
+        m_size = m_capacity - 1;
+        m_buffer = new char[m_capacity];
         strcpy(m_buffer, other);
     }
     else
@@ -198,12 +206,12 @@ String& String::operator= (const char* const other)
 
 String& String::operator= (const std::string& other)
 {
-    if(m_buffer_size < other.size() + 1)
+    if(m_capacity < other.size() + 1)
     {
         Clear();
         m_size = other.size();
-        m_buffer_size = m_size + 1;
-        m_buffer = new char[m_buffer_size];
+        m_capacity = other.capacity() + 1;
+        m_buffer = new char[m_capacity];
         strcpy(m_buffer, other.c_str());
     }
     else
@@ -252,9 +260,9 @@ bool String::operator!= (const String& other) const
 String String::operator+ (const String& other) const
 {
     String result;
-    result.m_buffer_size = m_buffer_size + other.m_buffer_size - 1;
+    result.m_capacity = m_capacity + other.m_capacity - 1;
     result.m_size = m_size + other.m_size;
-    result.m_buffer = new char[result.m_buffer_size];
+    result.m_buffer = new char[result.m_capacity];
     
     strcpy(result.m_buffer, m_buffer);
     strcpy(result.m_buffer + m_size, other.m_buffer);

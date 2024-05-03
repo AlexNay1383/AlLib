@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "*.meta": "yaml",
-        "ostream": "cpp",
-        "*.tcc": "cpp"
-    }
-}
